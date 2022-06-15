@@ -1,2 +1,3 @@
-# wil-viewer
+# WIL Viewer
+
 *.wil file viewer.
