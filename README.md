@@ -1,4 +1,4 @@
-# WIL Viewer
+# Legend of Mir2 WIL Viewer
 
 A cross-platform *.wil file viewer.
 
