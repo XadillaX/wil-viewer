@@ -1,6 +1,6 @@
 {
   "name": "wil-viewer",
-  "productName": "wil-viewer",
+  "productName": "WIL Viewer",
   "version": "1.0.0",
   "description": "*.wil file viewer.",
   "main": ".webpack/main",
@@ -20,7 +20,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./assets/icon.jpg"
+        "icon": "./assets/icon"
       },
       "makers": [
         {
