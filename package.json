@@ -72,6 +72,8 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
     "@electron-forge/plugin-webpack": "6.0.0-beta.63",
+    "@types/empty-dir": "^2.0.1",
+    "@types/path-browserify": "^1.0.0",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -91,9 +93,12 @@
     "@jimp/png": "^0.16.1",
     "antd": "^4.21.1",
     "electron-squirrel-startup": "^1.0.0",
+    "empty-dir": "^2.0.0",
+    "path-browserify": "^1.0.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-intersection-observer": "^9.3.0",
+    "scarlet-task": "^1.1.0",
     "wil-parser": "^1.0.3"
   }
 }
