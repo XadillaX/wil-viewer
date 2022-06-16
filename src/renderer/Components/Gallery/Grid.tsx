@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import common from '../common';
+import common from '../../common';
 import LazyGridCell from './LazyGridCell';
 
 function Grid({ filename, count, selectedIdx }: { filename: string, count: number, selectedIdx: number }) {

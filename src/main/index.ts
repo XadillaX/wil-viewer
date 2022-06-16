@@ -19,11 +19,13 @@ const createWindow = (): void => {
       nodeIntegration: true,
       contextIsolation: false,
     },
+    autoHideMenuBar: true,
+    icon: './assets/icon.jpg',
   });
 
   common.mainWindow = mainWindow;
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 };
 
 app.on('ready', createWindow);

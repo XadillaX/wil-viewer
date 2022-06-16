@@ -1,10 +1,14 @@
-import { Button, Col, Descriptions, Divider, Input, Modal, Layout, Row, Spin } from 'antd';
+import { Button, Col, Descriptions, Divider, Input, Layout, message, Row, Spin } from 'antd';
 import { ipcRenderer, OpenDialogReturnValue } from 'electron';
+import * as path from 'path-browserify';
 import { useState } from 'react';
 
 import common from './common';
-import Grid from './Components/Grid';
-import PreviewImage from './Components/PreviewImage';
+import Grid from './Components/Gallery/Grid';
+import ExportButton from './Components/Operator/ExportButton';
+import JumpButton from './Components/Operator/JumpButton';
+import PreviewImage from './Components/Gallery/PreviewImage';
+import { getWILFileType } from './util';
 
 function App() {
   const [ filename, setFilename ] = useState('');
@@ -12,8 +16,6 @@ function App() {
   const [ count, setCount ] = useState(0);
   const [ selectedIdx, setSelectedIdx ] = useState(-1);
   const [ autoPlay, setAutoPlay ] = useState(false);
-  const [ showJumpModal, setShowJumpModal ] = useState(false);
-  const [ showExportModal, setShowExportModal ] = useState(false);
 
   common.setSelectedIdxState(selectedIdx, setSelectedIdx);
   return (
@@ -35,11 +37,24 @@ function App() {
                   if (ret.canceled) return;
                   if (!ret.filePaths.length) return;
 
-                  setSelectedIdx(-1);
                   const fn = ret.filePaths[0];
-                  setFilename(fn);
                   setLoading(true);
-                  const picCount = (await ipcRenderer.invoke('parse-file', fn)) as number;
+                  setSelectedIdx(-1);
+
+                  let picCount;
+                  try {
+                    picCount = (await ipcRenderer.invoke('parse-file', fn)) as number;
+                  } catch (e) {
+                    setLoading(false);
+                    setFilename('');
+                    setCount(0);
+                    setSelectedIdx(-1);
+                    common.cache = new Map();
+                    message.error(e.message);
+                    return;
+                  }
+
+                  setFilename(fn);
                   setCount(picCount);
                   setLoading(false);
                   common.cache = new Map();
@@ -64,7 +79,7 @@ function App() {
             <div style={{ height: '10px', width: '100%' }} />
 
             <Col span={12}>
-              <Button disabled={autoPlay} style={{ width: '100%' }} onClick={() => {
+              <Button disabled={autoPlay || count === 0} style={{ width: '100%' }} onClick={() => {
                 common.play(setAutoPlay);
               }}>自动播放</Button>
             </Col>
@@ -78,49 +93,19 @@ function App() {
             <div style={{ height: '10px', width: '100%' }} />
 
             <Col span={12}>
-              <Button disabled={!count} style={{ width: '100%' }} onClick={() => {
-                setShowJumpModal(true);
-              }}>跳转</Button>
-              <Modal
-                visible={showJumpModal}
-                title="跳转"
-                okText="确定"
-                cancelText="取消"
-                onOk={() => {
-                  setShowJumpModal(false);
-                }}
-                onCancel={() => {
-                  setShowJumpModal(false);
-                }}
-              >
-                施工中 🚧
-              </Modal>
+              <JumpButton count={count} selectedIdx={selectedIdx} />
             </Col>
 
             <Col span={12}>
-              <Button disabled={!count} style={{ width: '100%' }} onClick={() => {
-                setShowExportModal(true);
-              }}>批量导出</Button>
-              <Modal
-                visible={showExportModal}
-                title="批量导出"
-                okText="确定"
-                cancelText="取消"
-                onOk={() => {
-                  setShowExportModal(false);
-                }}
-                onCancel={() => {
-                  setShowExportModal(false);
-                }}
-              >
-                施工中 🚧
-              </Modal>
+              <ExportButton count={count} />
             </Col>
           </Row>
 
           <div style={{ height: '10px', width: '100%' }} />
 
-          <Descriptions bordered title="文件信息" size="small">
+          <Descriptions bordered title="文件信息" size="small" column={1}>
+            <Descriptions.Item label="WIL 文件">{filename ? path.basename(filename) : '-'}</Descriptions.Item>
+            <Descriptions.Item label="资源类型">{filename ? getWILFileType(filename) : '-'}</Descriptions.Item>
             <Descriptions.Item label="图片数">{count ? count : '-'}</Descriptions.Item>
           </Descriptions>
         </Layout.Sider>

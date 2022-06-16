@@ -1,7 +1,7 @@
 import { useInView } from 'react-intersection-observer';
 
 import GridCell from './GridCell';
-import common from '../common';
+import common from '../../common';
 
 function LazyGridCell({ idx, selected, totalCols }: { idx: number, selected: boolean, totalCols: number }) {
   const { ref, inView } = useInView();
