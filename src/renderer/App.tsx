@@ -2,6 +2,7 @@ import { Button, Col, Descriptions, Divider, Input, Layout, message, Row, Spin }
 import { ipcRenderer, OpenDialogReturnValue } from 'electron';
 import * as path from 'path-browserify';
 import { useState } from 'react';
+import pkg from '../../package.json';
 
 import common from './common';
 import Grid from './Components/Gallery/Grid';
@@ -16,6 +17,8 @@ function App() {
   const [ count, setCount ] = useState(0);
   const [ selectedIdx, setSelectedIdx ] = useState(-1);
   const [ autoPlay, setAutoPlay ] = useState(false);
+
+  document.title = `WIL 文件查看器 v${pkg.version}`;
 
   common.setSelectedIdxState(selectedIdx, setSelectedIdx);
   return (
