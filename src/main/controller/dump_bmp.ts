@@ -1,7 +1,9 @@
 import * as assert from 'assert'
+
 import { ipcMain } from 'electron';
 import { Wil } from 'wil-parser';
 import jimp from 'jimp';
+import replaceColor from 'replace-color';
 
 import common from '../common';
 
@@ -22,16 +24,27 @@ ipcMain.handle('dump-bmp', async (_, idx: number, thumb = false) => {
 
   let newWidth: number;
   let newHeight: number;
-  if (width < 50 && height < 50) {
+  if (width < 100 && height < 100) {
     newWidth = width;
     newHeight = height;
   } else if (width > height) {
-    newWidth = 50;
-    newHeight = (height / width) * 50;
+    newWidth = 100;
+    newHeight = (height / width) * 100;
   } else {
-    newHeight = 50;
-    newWidth = (width / height) * 50;
+    newHeight = 100;
+    newWidth = (width / height) * 100;
   }
 
-  return (await image.resize(newWidth, newHeight).getBufferAsync(jimp.MIME_PNG)).toString('base64');
+  const replaced = await replaceColor({
+    image: image,
+    colors: {
+      type: 'rgb',
+      targetColor: [ 0, 0, 0 ],
+      replaceColor: [ 0, 0, 0, 0 ],
+    },
+    deltaE: 0,
+  });
+  const resized = await replaced.resize(newWidth, newHeight);
+
+  return (await resized.getBufferAsync(jimp.MIME_PNG)).toString('base64');
 });

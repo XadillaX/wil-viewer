@@ -1,0 +1,11 @@
+#thumbnail-list {
+  height: 100%;
+}
+
+#thumbnail-list .thumbnail-list-row {
+  background: none;
+}
+
+#thumbnail-list .thumbnail-list-row > div {
+  border: none;
+}

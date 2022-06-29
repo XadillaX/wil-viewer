@@ -9,7 +9,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "postinstall": "rm -rf node_modules/replace-color/node_modules/jimp && echo 'replace-color fixed'"
   },
   "keywords": [],
   "author": {
@@ -78,6 +79,7 @@
     "@types/path-browserify": "^1.0.0",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
+    "@types/uuid-1345": "^0.99.22",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "@vercel/webpack-asset-relocator-loader": "1.7.0",
@@ -86,21 +88,28 @@
     "eslint": "^8.0.1",
     "eslint-plugin-import": "^2.25.0",
     "fork-ts-checker-webpack-plugin": "^6.0.1",
+    "less": "^4.1.3",
+    "less-loader": "^11.0.0",
     "node-loader": "^2.0.0",
     "style-loader": "^3.0.0",
     "ts-loader": "^9.2.2",
     "typescript": "~4.5.4"
   },
   "dependencies": {
+    "@ant-design/pro-components": "^1.1.6",
     "@jimp/png": "^0.16.1",
     "antd": "^4.21.1",
     "electron-squirrel-startup": "^1.0.0",
     "empty-dir": "^2.0.0",
+    "jimp": "^0.16.1",
     "path-browserify": "^1.0.1",
     "react": "^18.1.0",
+    "react-data-grid": "^7.0.0-beta.13",
     "react-dom": "^18.1.0",
-    "react-intersection-observer": "^9.3.0",
+    "react-intersection-observer": "^9.3.4",
+    "replace-color": "^2.3.0",
     "scarlet-task": "^1.1.0",
+    "uuid-1345": "^1.0.2",
     "wil-parser": "^1.0.3"
   }
 }

@@ -1,0 +1,33 @@
+#wil-toolbar {
+  display: flex;
+
+  align-items: center;
+  color: white;
+  display: flex;
+  height: 56px;
+  padding: 0 16px;
+}
+
+#wil-toolbar-left, #wil-toolbar-right {
+  flex: 1;
+}
+
+#wil-toolbar-left {
+  align-items: center;
+  display: flex;
+  overflow: hidden;
+  padding-inline-end: 20px;
+}
+
+#wil-toolbar-center {
+  align-items: center;
+  display: flex;
+}
+
+#wil-toolbar-right {
+  display: flex;
+  justify-content: flex-end;
+  padding-inline-start: 20px;
+  text-align: end;
+  white-space: nowrap;
+}
