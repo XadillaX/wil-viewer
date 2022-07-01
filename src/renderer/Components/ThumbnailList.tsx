@@ -1,55 +1,98 @@
-import DataGrid from 'react-data-grid';
+import DataGrid, { DataGridHandle } from 'react-data-grid';
+import { Scarlet, TaskObject, TaskProcessor } from 'scarlet-task';
 
 import './ThumbnailList.css';
 import Bus, { IImageItem, ImageItemLoadingStatus } from '../bus';
 import { Spin } from 'antd';
 import { ipcRenderer } from 'electron';
+import { useEffect, useRef } from 'react';
 
 interface IThumbnailListProps {
   bus: Bus;
 }
 
+function findRealRow(bus: Bus, idx: number): IImageItem | null {
+  const { realImageList } = bus;
+  return realImageList[idx] || null;
+}
+
+const scarlet = new Scarlet(10);
+
 function ThumbnailList({ bus }: IThumbnailListProps) {
-  const triggerLoad = async (row: IImageItem, fileUUID: string) => {
-    let ret: string;
+  const ref = useRef<DataGridHandle>(null);
+  interface ILoadThumbnailParameter { idx: number, fileUUID: string }
+  const loadThumbnail: TaskProcessor<ILoadThumbnailParameter> = async (to: TaskObject<ILoadThumbnailParameter>) => {
+    const { task } = to;
+    const row = findRealRow(bus, task.idx);
+    if (!row || bus.fileUUID !== task.fileUUID) {
+      return to.done();
+    }
+
+    let ret: IDumpBMPResult;
     try {
-      ret = await ipcRenderer.invoke('dump-bmp', row.idx, true);
+      ret = await ipcRenderer.invoke('dump-bmp', task.idx, true);
     } catch (e) {
-      // TODO(XadillaX): Do something.
+      if (bus.fileUUID !== task.fileUUID) {
+        return to.done();
+      }
+
+      row.loading = ImageItemLoadingStatus.NotStarted;
+      bus.setDisplayImageList([ ...bus.realImageList ]);
+
       console.error(e);
-      return;
+      return to.done();
     }
 
-    if (bus.fileUUID !== fileUUID) {
-      return;
+    if (bus.fileUUID !== task.fileUUID) {
+      return to.done();
     }
 
-    row.base64 = `data:image/png;base64,${ret}`;
     row.loading = ImageItemLoadingStatus.Loaded;
-    bus.setImagesList([ ...bus.imagesList ]);
+    row.base64 = `data:image/png;base64,${ret.base64}`;
+
+    const id = `thumb-idx-${task.idx}`;
+    if (ref.current.element.querySelector(`#${id}`)) {
+      bus.setDisplayImageList([ ...bus.realImageList ]);
+    }
+
+    to.done();
   };
+
+  useEffect(() => {
+    ref.current.scrollToRow(0);
+    ref.current.selectCell({ idx: -1, rowIdx: -1 });
+  }, [ bus.fileUUID ]);
 
   return (
     <div id="thumbnail-list">
       <DataGrid
+        ref={ref}
         rowClass={() => { return 'thumbnail-list-row'; }}
         rowHeight={150}
         style={{ blockSize: '100%', background: 'none' }}
         columns={[{
           key: 'pic',
           name: '缩略图',
-          formatter: ({ row }: { row: IImageItem }) => {
+          formatter: ({ row: displayRow, isCellSelected }) => {
+            const row = findRealRow(bus, displayRow.idx);
             if (row.loading === ImageItemLoadingStatus.NotStarted) {
-              row.loading = ImageItemLoadingStatus.Loading;
-              triggerLoad(row, bus.fileUUID);
+              const { fileUUID } = bus;
+              row.loading = ImageItemLoadingStatus.LoadingViaScroll;
+              scarlet.push({ idx: row.idx, fileUUID }, loadThumbnail);
+            }
+
+            if (isCellSelected && bus.selectedIdx !== row.idx) {
+              queueMicrotask(() => {
+                bus.setSelectedIdx(row.idx);
+              });
             }
 
             const img = row.loading !== ImageItemLoadingStatus.Loaded ?
-              <></> :
+              (<></>) :
               (<img src={row.base64} style={{ maxWidth: '100px', maxHeight: '100px' }} />);
 
             return (
-              <div>
+              <div id={`thumb-idx-${row.idx}`}>
                 <div
                   style={{
                     width: '100px',
@@ -60,9 +103,7 @@ function ThumbnailList({ bus }: IThumbnailListProps) {
                     background: '#fff',
                   }}
                 >
-                  <Spin
-                    spinning={row.loading === ImageItemLoadingStatus.Loading}
-                  >
+                  <Spin spinning={row.loading === ImageItemLoadingStatus.LoadingViaAuto || row.loading === ImageItemLoadingStatus.LoadingViaScroll}>
                     <div style={{ width: '100px', height: '100px', lineHeight: '100px', textAlign: 'center', fontSize: '0px' }}>
                       {img}
                     </div>
@@ -73,7 +114,7 @@ function ThumbnailList({ bus }: IThumbnailListProps) {
             );
           },
         }]}
-        rows={bus.imagesList}
+        rows={bus.displayImageList}
         headerRowHeight={0}
       />
     </div>

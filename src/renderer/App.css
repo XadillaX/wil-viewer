@@ -30,4 +30,5 @@
   background-color: #000;
   height: calc(100vh - 56px);
   overflow: auto;
+  margin-left: 200px;
 }

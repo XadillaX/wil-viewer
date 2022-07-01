@@ -1,1 +1,1 @@
-declare module 'replace-color';
+declare module '@deathmoon/replace-color';
