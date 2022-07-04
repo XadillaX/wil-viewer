@@ -9,3 +9,5 @@ declare interface IDumpBMPResult {
     py: number;
   };
 }
+
+declare module "react-middle-ellipsis";

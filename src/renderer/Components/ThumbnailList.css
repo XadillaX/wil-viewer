@@ -9,3 +9,27 @@
 #thumbnail-list .thumbnail-list-row > div {
   border: none;
 }
+
+.thumbnail-list-row-content {
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  background: #fff;
+}
+
+.thumb-image-wrapper {
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  font-size: 0;
+}
+
+.thumb-id-wrapper {
+  text-align: center;
+  color: #fff;
+  line-height: 1;
+  margin-top: 12px;
+}

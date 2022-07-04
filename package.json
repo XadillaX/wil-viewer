@@ -96,6 +96,7 @@
   },
   "dependencies": {
     "@ant-design/pro-components": "^1.1.6",
+    "@deathmoon/replace-color": "^2.3.1",
     "@jimp/png": "^0.16.1",
     "@tldraw/core": "^1.14.0",
     "antd": "^4.21.1",
@@ -109,9 +110,10 @@
     "react-data-grid": "^7.0.0-beta.13",
     "react-dom": "^18.1.0",
     "react-intersection-observer": "^9.3.4",
+    "react-middle-ellipsis": "^1.2.1",
     "react-spinners": "^0.13.3",
-    "@deathmoon/replace-color": "^2.3.1",
     "scarlet-task": "^2.0.0",
+    "unstated-next": "^1.1.0",
     "uuid-1345": "^1.0.2",
     "wil-parser": "^1.0.4"
   }
